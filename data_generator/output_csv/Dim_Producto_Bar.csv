@@ -1,0 +1,12 @@
+id_producto,nombre_producto,categoria,coste_proveedor,precio_venta
+1,Palomitas Pequeñas,Palomitas,0.5,3.5
+2,Palomitas Medianas,Palomitas,0.8,5.0
+3,Palomitas Gigantes,Palomitas,1.2,6.5
+4,Refresco Cola 50cl,Bebida,0.4,3.0
+5,Refresco Naranja 50cl,Bebida,0.4,3.0
+6,Agua Mineral 50cl,Bebida,0.2,2.0
+7,Nachos con Queso,Snack,1.0,4.5
+8,Gominolas 100g,Dulces,0.3,2.5
+9,Chocolatina,Dulces,0.5,2.0
+10,Combo Pareja (2 Refrescos + Palomitas L),Combo,1.6,9.5
+11,Combo Infantil (Zumo + Palomitas S + Juguete),Combo,2.0,7.0
