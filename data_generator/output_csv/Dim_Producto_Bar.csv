@@ -1,12 +1,21 @@
 id_producto,nombre_producto,categoria,coste_proveedor,precio_venta
 1,Palomitas Pequeñas,Palomitas,0.5,3.5
 2,Palomitas Medianas,Palomitas,0.8,5.0
-3,Palomitas Gigantes,Palomitas,1.2,6.5
-4,Refresco Cola 50cl,Bebida,0.4,3.0
-5,Refresco Naranja 50cl,Bebida,0.4,3.0
-6,Agua Mineral 50cl,Bebida,0.2,2.0
-7,Nachos con Queso,Snack,1.0,4.5
-8,Gominolas 100g,Dulces,0.3,2.5
-9,Chocolatina,Dulces,0.5,2.0
-10,Combo Pareja (2 Refrescos + Palomitas L),Combo,1.6,9.5
-11,Combo Infantil (Zumo + Palomitas S + Juguete),Combo,2.0,7.0
+3,Palomitas Grandes,Palomitas,1.0,6.0
+4,Palomitas Gigantes,Palomitas,1.2,6.5
+5,Refresco Cola 50cl,Bebida,0.4,3.0
+6,Refresco Naranja 50cl,Bebida,0.4,3.0
+7,Refresco Limón 50cl,Bebida,0.4,3.0
+8,Agua Mineral 50cl,Bebida,0.2,2.0
+9,Cerveza 33cl,Bebida,0.6,4.0
+10,Zumo de Manzana,Bebida,0.35,2.5
+11,Nachos con Queso,Snack,1.0,4.5
+12,Hot Dog,Snack,0.8,4.0
+13,Patatas Fritas,Snack,0.5,3.5
+14,Gominolas 100g,Dulces,0.3,2.5
+15,Chocolatina,Dulces,0.5,2.0
+16,Helado Tarrina,Dulces,0.7,3.5
+17,Combo Pareja,Combo,1.6,9.5
+18,Combo Familiar,Combo,2.5,14.0
+19,Combo Infantil,Combo,2.0,7.0
+20,Combo Premium VIP,Combo,3.0,16.5

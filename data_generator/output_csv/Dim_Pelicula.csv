@@ -1,81 +1,51 @@
 id_pelicula,titulo,genero,clasificacion_edad,distribuidora,duracion_minutos,idioma_formato,es_reestreno
-1,El Padrino (Reestreno),Ciencia Ficción,+18,Warner Bros,172,Doblada Español,True
-2,Matrix (Reestreno),Ciencia Ficción,+12,Disney,122,VOSE,True
-3,Casablanca (Reestreno),Drama,+16,Warner Bros,177,Doblada Catalán,True
-4,Jurassic Park (Reestreno),Drama,+18,Disney,165,Doblada Catalán,True
-5,El Señor de los Anillos (Reestreno),Terror,+7,A Contracorriente,105,Doblada Español,True
-6,Pulp Fiction (Reestreno),Animación,+16,Warner Bros,99,Doblada Catalán,True
-7,Alien (Reestreno),Ciencia Ficción,+7,Warner Bros,115,Doblada Español,True
-8,Gladiator (Reestreno),Comedia,+16,Disney,153,Doblada Español,True
-9,Titanic (Reestreno),Drama,+16,Universal,118,VOSE,True
-10,Avatar (Reestreno),Terror,+18,Sony Pictures,176,Doblada Catalán,True
-11,Bastante Presidente: Assimilated,Documental,+12,Independiente,151,VOSE,False
-12,Obra Desarrollo: Devolved,Comedia,+7,Sony Pictures,93,Doblada Catalán,False
-13,Realizar Peso: Quality-focused,Acción,+18,Sony Pictures,160,Doblada Español,False
-14,Haya Este: Assimilated,Acción,TP,Warner Bros,114,Doblada Español,False
-15,Eran Dólares: Robust,Acción,+12,Disney,150,Doblada Español,False
-16,Cualquier Corazón: Streamlined,Ciencia Ficción,+16,Sony Pictures,154,Doblada Español,False
-17,Estudio Ley: Organized,Thriller,+7,Independiente,137,Doblada Español,False
-18,Título Socialista: Adaptive,Comedia,TP,Filmax,130,VOSE,False
-19,Tenía Ocho: Optimized,Documental,+16,Warner Bros,171,Doblada Español,False
-20,Medio Nadie: Virtual,Acción,+16,A Contracorriente,98,Doblada Español,False
-21,Dijo Ex: Cross-platform,Terror,+7,Independiente,102,VOSE,False
-22,Objeto Meses: Balanced,Drama,+12,Independiente,116,Doblada Español,False
-23,Resto Mientras: Multi-tiered,Thriller,+18,Disney,91,Doblada Español,False
-24,Casos Capaz: Self-enabling,Comedia,+7,Universal,137,VOSE,False
-25,Superior Tipo: Triple-buffered,Thriller,+7,Filmax,92,Doblada Español,False
-26,Viene Mí: Visionary,Documental,TP,Filmax,118,VOSE,False
-27,Junio Eran: Cross-platform,Ciencia Ficción,+16,Independiente,104,Doblada Español,False
-28,Bueno Viejo: Multi-lateral,Ciencia Ficción,+7,Warner Bros,159,Doblada Español,False
-29,C Ejemplo: Synchronized,Animación,TP,Warner Bros,159,VOSE,False
-30,Estilo I: Stand-alone,Drama,TP,Disney,108,Doblada Español,False
-31,Viejo Tienen: Public-key,Comedia,+7,Filmax,100,Doblada Español,False
-32,Ver Soy: Multi-tiered,Acción,+18,Disney,138,Doblada Catalán,False
-33,Ejército Civil: Face-to-face,Ciencia Ficción,+7,A Contracorriente,115,Doblada Catalán,False
-34,Entrar Plazo: Vision-oriented,Documental,+7,Paramount,143,Doblada Catalán,False
-35,Pese Este: Intuitive,Comedia,TP,Independiente,164,Doblada Español,False
-36,Donde Habían: Re-contextualized,Comedia,+18,Sony Pictures,149,Doblada Catalán,False
-37,Usted Boca: Proactive,Drama,+12,Disney,116,Doblada Catalán,False
-38,Futuro Algunos: Fundamental,Ciencia Ficción,+7,Independiente,154,Doblada Catalán,False
-39,Serán Libre: Public-key,Acción,+18,Paramount,169,Doblada Español,False
-40,Favor Media: Reduced,Drama,+12,Disney,98,Doblada Español,False
-41,Tarde Trabajo: Profound,Ciencia Ficción,+12,Sony Pictures,176,Doblada Catalán,False
-42,Juez Desde: Customizable,Terror,+12,Independiente,117,Doblada Español,False
-43,Tenía Habla: Synergized,Comedia,+16,Paramount,90,Doblada Español,False
-44,Él Comisión: Multi-tiered,Animación,+7,Paramount,105,VOSE,False
-45,Gracias Problemas: Reactive,Documental,+18,Warner Bros,99,Doblada Español,False
-46,Modelo Unos: Synergized,Drama,+18,Warner Bros,132,Doblada Español,False
-47,Nosotros Expresión: Stand-alone,Documental,+7,Warner Bros,124,Doblada Catalán,False
-48,Casos Medida: Diverse,Acción,+12,Sony Pictures,172,Doblada Español,False
-49,Perdido Carta: Up-sized,Comedia,+12,Filmax,164,Doblada Español,False
-50,Práctica José: Profit-focused,Terror,+7,Universal,137,Doblada Español,False
-51,Largo Pregunta: Sharable,Drama,+12,Filmax,170,Doblada Español,False
-52,Cualquier Luego: Multi-layered,Ciencia Ficción,+7,Disney,133,Doblada Español,False
-53,Allá Perdido: Vision-oriented,Thriller,+7,Sony Pictures,143,Doblada Catalán,False
-54,Cuyo Mayoría: Pre-emptive,Ciencia Ficción,+7,Sony Pictures,88,Doblada Español,False
-55,Propios Amor: Integrated,Documental,+12,Paramount,93,Doblada Catalán,False
-56,Gente Busca: Re-contextualized,Animación,+18,Filmax,171,Doblada Catalán,False
-57,Dejó Organización: Cloned,Acción,TP,Paramount,107,Doblada Catalán,False
-58,Memoria Además: De-engineered,Acción,TP,Filmax,129,Doblada Catalán,False
-59,Blanca Contrario: Down-sized,Documental,+18,Disney,134,Doblada Español,False
-60,Vio Parecía: Optimized,Ciencia Ficción,TP,Filmax,85,Doblada Español,False
-61,Juez Actitud: Team-oriented,Animación,+16,Disney,170,Doblada Catalán,False
-62,Respecto Fondo: Synchronized,Animación,TP,Paramount,149,Doblada Catalán,False
-63,Consejo Material: Programmable,Documental,+12,Filmax,174,Doblada Catalán,False
-64,Último Realidad: Cloned,Drama,+7,Filmax,170,VOSE,False
-65,Productos Jóvenes: Focused,Drama,+18,Paramount,136,Doblada Español,False
-66,Los Ahora: Triple-buffered,Ciencia Ficción,+12,Sony Pictures,140,Doblada Catalán,False
-67,Tu Tiempo: Automated,Thriller,+16,Independiente,171,Doblada Español,False
-68,Tenemos Unas: Grass-roots,Thriller,+7,Disney,121,Doblada Catalán,False
-69,Hizo Allá: De-engineered,Comedia,+7,Paramount,113,Doblada Español,False
-70,Principal González: Fully-configurable,Drama,TP,Warner Bros,116,VOSE,False
-71,Llamado Dado: Ergonomic,Comedia,+16,Filmax,165,Doblada Español,False
-72,Trabajadores Arte: Multi-channeled,Documental,+16,Filmax,116,Doblada Español,False
-73,Posibilidad Considera: Upgradable,Acción,TP,Filmax,113,Doblada Español,False
-74,Grande Pocos: Cross-platform,Thriller,TP,Sony Pictures,100,VOSE,False
-75,Humanos Segunda: Customer-focused,Drama,+16,A Contracorriente,141,VOSE,False
-76,Muchos Resto: Organized,Thriller,+7,Independiente,142,Doblada Catalán,False
-77,He María: Persistent,Terror,+12,Independiente,165,Doblada Español,False
-78,Miembros Técnica: Reactive,Ciencia Ficción,+16,Disney,176,Doblada Catalán,False
-79,Existencia Palabra: Advanced,Terror,+12,A Contracorriente,125,Doblada Español,False
-80,Comercio Sociedad: Down-sized,Drama,+7,Sony Pictures,134,Doblada Español,False
+1,El Padrino,Drama,+16,Paramount,175,Doblada Español,True
+2,Matrix,Ciencia Ficción,+12,Warner Bros,136,VOSE,False
+3,Casablanca,Drama,+7,Warner Bros,102,VOSE,False
+4,Jurassic Park,Ciencia Ficción,TP,Universal,127,VOSE,False
+5,El Señor de los Anillos: La Comunidad del Anillo,Acción,+12,Warner Bros,178,Doblada Catalán,False
+6,Pulp Fiction,Thriller,+18,Independiente,154,Doblada Catalán,False
+7,Alien: El Octavo Pasajero,Terror,+16,Disney,117,VOSE,False
+8,Gladiator,Acción,+16,Universal,155,Doblada Catalán,False
+9,Titanic,Drama,+12,Paramount,195,Doblada Español,False
+10,Avatar,Ciencia Ficción,+7,Disney,162,Doblada Español,False
+11,Oppenheimer,Drama,+16,Universal,180,Doblada Español,False
+12,Barbie,Comedia,TP,Warner Bros,114,VOSE,True
+13,Spider-Man: Across the Spider-Verse,Animación,+7,Sony Pictures,140,VOSE,False
+14,Dune: Parte Dos,Ciencia Ficción,+12,Warner Bros,166,Doblada Español,False
+15,Inside Out 2,Animación,TP,Disney,100,Doblada Español,False
+16,Deadpool y Wolverine,Acción,+16,Disney,128,Doblada Español,True
+17,Wonka,Comedia,TP,Warner Bros,116,Doblada Español,False
+18,Pobres Criaturas,Drama,+18,Disney,141,Doblada Catalán,False
+19,Killers of the Flower Moon,Thriller,+16,Paramount,206,VOSE,False
+20,Napoleon,Drama,+16,Sony Pictures,158,Doblada Catalán,False
+21,Wish,Animación,TP,Disney,95,VOSE,True
+22,The Batman,Acción,+12,Warner Bros,176,Doblada Español,False
+23,Top Gun: Maverick,Acción,+7,Paramount,131,Doblada Catalán,False
+24,Encanto,Animación,TP,Disney,102,VOSE,False
+25,No Time to Die,Acción,+12,Universal,163,Doblada Español,False
+26,Interstellar,Ciencia Ficción,+12,Paramount,169,VOSE,False
+27,El Caballero Oscuro,Acción,+12,Warner Bros,152,Doblada Español,False
+28,Parásitos,Thriller,+16,A Contracorriente,132,Doblada Español,True
+29,Coco,Animación,TP,Disney,105,Doblada Español,False
+30,Vengadores: Endgame,Acción,+12,Disney,181,Doblada Catalán,False
+31,Joker,Drama,+18,Warner Bros,122,Doblada Español,False
+32,La La Land,Comedia,TP,Filmax,128,Doblada Catalán,False
+33,El Renacido,Drama,+16,Disney,156,Doblada Español,False
+34,Mad Max: Fury Road,Acción,+16,Warner Bros,120,Doblada Catalán,False
+35,Gravity,Ciencia Ficción,+7,Warner Bros,91,Doblada Español,False
+36,El Gran Hotel Budapest,Comedia,+12,Disney,99,Doblada Español,False
+37,Whiplash,Drama,+12,Sony Pictures,107,VOSE,True
+38,John Wick 4,Acción,+16,Filmax,169,Doblada Español,False
+39,Aquaman y el Reino Perdido,Acción,+7,Warner Bros,124,VOSE,False
+40,La Sociedad de la Nieve,Drama,+16,A Contracorriente,144,VOSE,True
+41,Robot Salvaje,Animación,TP,Universal,101,Doblada Catalán,False
+42,Venom: El Último Baile,Acción,+12,Sony Pictures,109,Doblada Español,False
+43,Megalópolis,Drama,+16,Independiente,138,Doblada Español,False
+44,Alien: Romulus,Terror,+16,Disney,119,Doblada Catalán,False
+45,Beetlejuice Beetlejuice,Comedia,+12,Warner Bros,104,Doblada Español,True
+46,Twisters,Acción,+7,Universal,122,Doblada Catalán,True
+47,It Ends with Us,Drama,+12,Sony Pictures,130,Doblada Español,True
+48,Un Mundo Feliz,Documental,+12,Independiente,96,VOSE,False
+49,El Último Mohicano,Documental,+7,A Contracorriente,88,Doblada Catalán,False
+50,Monstruos: La Historia de Lyle y Erik Menéndez,Thriller,+16,Filmax,115,Doblada Catalán,False
