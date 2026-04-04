@@ -1,0 +1,10 @@
+# Credenciales GCP
+credenciales_gcp.json
+
+# Python
+__pycache__/
+*.pyc
+venv/
+
+# CSVs generados
+data_generator/output_csv/*.csv
