@@ -396,11 +396,25 @@ def generar_hechos(
 # EXPORTACIÓN
 # ===================================================================
 
-def exportar_csv(df: pd.DataFrame, nombre: str) -> None:
-    """Exporta un DataFrame a CSV en el directorio de salida."""
+def exportar_csv(df: pd.DataFrame, nombre: str, append: bool = False) -> None:
+    """Exporta un DataFrame a CSV. Si append=True, añade filas al fichero existente."""
     ruta = os.path.join(OUTPUT_DIR, f"{nombre}.csv")
-    df.to_csv(ruta, index=False, encoding="utf-8")
-    print(f"  [OK] {nombre}.csv  ->  {len(df):,} filas")
+    if append and os.path.exists(ruta):
+        df.to_csv(ruta, mode="a", header=False, index=False, encoding="utf-8")
+        total = len(pd.read_csv(ruta))
+        print(f"  [OK] {nombre}.csv  ->  +{len(df):,} filas (total: {total:,})")
+    else:
+        df.to_csv(ruta, index=False, encoding="utf-8")
+        print(f"  [OK] {nombre}.csv  ->  {len(df):,} filas")
+
+
+def _leer_max_id(nombre_csv: str, columna_id: str) -> int:
+    """Lee el ID máximo actual de un CSV existente, o devuelve 0."""
+    ruta = os.path.join(OUTPUT_DIR, f"{nombre_csv}.csv")
+    if os.path.exists(ruta):
+        df = pd.read_csv(ruta, usecols=[columna_id])
+        return int(df[columna_id].max())
+    return 0
 
 
 # ===================================================================
@@ -453,30 +467,52 @@ def main() -> None:
     print(f"  Modo: {args.modo}  |  Rango: {fecha_inicio} -> {fecha_fin} ({dias} dias)")
     print(f"{'='*60}\n")
 
+    es_incremental = args.modo == "diario"
+
     # --- Dimensiones ---
     print("[1/6] Generando dimensiones...")
-    df_tiempo = generar_dim_tiempo(fecha_inicio, fecha_fin)
     df_salas = generar_dim_sala()
     df_peliculas = generar_dim_pelicula()
     df_socios = generar_dim_socio()
     df_productos = generar_dim_producto_bar()
 
-    exportar_csv(df_tiempo, "Dim_Tiempo")
-    exportar_csv(df_salas, "Dim_Sala")
-    exportar_csv(df_peliculas, "Dim_Pelicula")
-    exportar_csv(df_socios, "Dim_Socio")
-    exportar_csv(df_productos, "Dim_Producto_Bar")
+    if es_incremental:
+        # Modo diario: append a Dim_Tiempo, reusar dimensiones existentes
+        offset_tiempo = _leer_max_id("Dim_Tiempo", "id_tiempo")
+        df_tiempo = generar_dim_tiempo(fecha_inicio, fecha_fin)
+        df_tiempo["id_tiempo"] = df_tiempo["id_tiempo"] + offset_tiempo
+        exportar_csv(df_tiempo, "Dim_Tiempo", append=True)
+        # Las dimensiones maestras no cambian, no se sobreescriben
+        print("  [--] Dim_Sala, Dim_Pelicula, Dim_Socio, Dim_Producto_Bar (sin cambios)")
+    else:
+        # Modo historico: sobreescribir todo
+        df_tiempo = generar_dim_tiempo(fecha_inicio, fecha_fin)
+        exportar_csv(df_tiempo, "Dim_Tiempo")
+        exportar_csv(df_salas, "Dim_Sala")
+        exportar_csv(df_peliculas, "Dim_Pelicula")
+        exportar_csv(df_socios, "Dim_Socio")
+        exportar_csv(df_productos, "Dim_Producto_Bar")
 
     # --- Hechos ---
-    print(f"\n[2/6] Generando tablas de hechos ({dias} días × {len(df_salas)} salas)...")
-    print("       Esto puede tardar unos minutos para cargas históricas largas.\n")
+    print(f"\n[2/6] Generando tablas de hechos ({dias} dias x {len(df_salas)} salas)...")
+    if not es_incremental:
+        print("       Esto puede tardar unos minutos para cargas historicas largas.\n")
+
+    # En modo incremental, continuar IDs desde el máximo existente
+    offset_ticket = _leer_max_id("Fact_Ventas_Entradas", "id_ticket") if es_incremental else 0
+    offset_bar = _leer_max_id("Fact_Ventas_Bar", "id_ticket_bar") if es_incremental else 0
 
     df_entradas, df_bar = generar_hechos(
         df_tiempo, df_salas, df_peliculas, df_socios, df_productos,
     )
 
-    exportar_csv(df_entradas, "Fact_Ventas_Entradas")
-    exportar_csv(df_bar, "Fact_Ventas_Bar")
+    # Desplazar IDs para evitar duplicados
+    if es_incremental and len(df_entradas) > 0:
+        df_entradas["id_ticket"] = df_entradas["id_ticket"] + offset_ticket
+        df_bar["id_ticket_bar"] = df_bar["id_ticket_bar"] + offset_bar
+
+    exportar_csv(df_entradas, "Fact_Ventas_Entradas", append=es_incremental)
+    exportar_csv(df_bar, "Fact_Ventas_Bar", append=es_incremental)
 
     # --- Resumen ---
     print(f"\n{'='*60}")

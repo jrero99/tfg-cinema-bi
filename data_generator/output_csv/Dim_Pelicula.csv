@@ -1,51 +1,51 @@
 id_pelicula,titulo,genero,clasificacion_edad,distribuidora,duracion_minutos,idioma_formato,es_reestreno
-1,El Padrino,Drama,+16,Paramount,175,Doblada Español,True
-2,Matrix,Ciencia Ficción,+12,Warner Bros,136,VOSE,False
-3,Casablanca,Drama,+7,Warner Bros,102,VOSE,False
-4,Jurassic Park,Ciencia Ficción,TP,Universal,127,VOSE,False
-5,El Señor de los Anillos: La Comunidad del Anillo,Acción,+12,Warner Bros,178,Doblada Catalán,False
-6,Pulp Fiction,Thriller,+18,Independiente,154,Doblada Catalán,False
+1,El Padrino,Drama,+16,Paramount,175,Doblada Español,False
+2,Matrix,Ciencia Ficción,+12,Warner Bros,136,Doblada Español,False
+3,Casablanca,Drama,+7,Warner Bros,102,Doblada Español,False
+4,Jurassic Park,Ciencia Ficción,TP,Universal,127,Doblada Español,True
+5,El Señor de los Anillos: La Comunidad del Anillo,Acción,+12,Warner Bros,178,VOSE,False
+6,Pulp Fiction,Thriller,+18,Independiente,154,VOSE,False
 7,Alien: El Octavo Pasajero,Terror,+16,Disney,117,VOSE,False
 8,Gladiator,Acción,+16,Universal,155,Doblada Catalán,False
-9,Titanic,Drama,+12,Paramount,195,Doblada Español,False
-10,Avatar,Ciencia Ficción,+7,Disney,162,Doblada Español,False
-11,Oppenheimer,Drama,+16,Universal,180,Doblada Español,False
-12,Barbie,Comedia,TP,Warner Bros,114,VOSE,True
-13,Spider-Man: Across the Spider-Verse,Animación,+7,Sony Pictures,140,VOSE,False
+9,Titanic,Drama,+12,Paramount,195,Doblada Catalán,False
+10,Avatar,Ciencia Ficción,+7,Disney,162,VOSE,False
+11,Oppenheimer,Drama,+16,Universal,180,Doblada Catalán,False
+12,Barbie,Comedia,TP,Warner Bros,114,Doblada Español,False
+13,Spider-Man: Across the Spider-Verse,Animación,+7,Sony Pictures,140,Doblada Español,False
 14,Dune: Parte Dos,Ciencia Ficción,+12,Warner Bros,166,Doblada Español,False
-15,Inside Out 2,Animación,TP,Disney,100,Doblada Español,False
-16,Deadpool y Wolverine,Acción,+16,Disney,128,Doblada Español,True
+15,Inside Out 2,Animación,TP,Disney,100,VOSE,True
+16,Deadpool y Wolverine,Acción,+16,Disney,128,VOSE,False
 17,Wonka,Comedia,TP,Warner Bros,116,Doblada Español,False
-18,Pobres Criaturas,Drama,+18,Disney,141,Doblada Catalán,False
-19,Killers of the Flower Moon,Thriller,+16,Paramount,206,VOSE,False
-20,Napoleon,Drama,+16,Sony Pictures,158,Doblada Catalán,False
-21,Wish,Animación,TP,Disney,95,VOSE,True
-22,The Batman,Acción,+12,Warner Bros,176,Doblada Español,False
+18,Pobres Criaturas,Drama,+18,Disney,141,Doblada Español,False
+19,Killers of the Flower Moon,Thriller,+16,Paramount,206,Doblada Español,True
+20,Napoleon,Drama,+16,Sony Pictures,158,Doblada Español,False
+21,Wish,Animación,TP,Disney,95,Doblada Catalán,False
+22,The Batman,Acción,+12,Warner Bros,176,VOSE,False
 23,Top Gun: Maverick,Acción,+7,Paramount,131,Doblada Catalán,False
-24,Encanto,Animación,TP,Disney,102,VOSE,False
+24,Encanto,Animación,TP,Disney,102,VOSE,True
 25,No Time to Die,Acción,+12,Universal,163,Doblada Español,False
-26,Interstellar,Ciencia Ficción,+12,Paramount,169,VOSE,False
-27,El Caballero Oscuro,Acción,+12,Warner Bros,152,Doblada Español,False
-28,Parásitos,Thriller,+16,A Contracorriente,132,Doblada Español,True
-29,Coco,Animación,TP,Disney,105,Doblada Español,False
-30,Vengadores: Endgame,Acción,+12,Disney,181,Doblada Catalán,False
-31,Joker,Drama,+18,Warner Bros,122,Doblada Español,False
-32,La La Land,Comedia,TP,Filmax,128,Doblada Catalán,False
-33,El Renacido,Drama,+16,Disney,156,Doblada Español,False
-34,Mad Max: Fury Road,Acción,+16,Warner Bros,120,Doblada Catalán,False
-35,Gravity,Ciencia Ficción,+7,Warner Bros,91,Doblada Español,False
+26,Interstellar,Ciencia Ficción,+12,Paramount,169,Doblada Catalán,False
+27,El Caballero Oscuro,Acción,+12,Warner Bros,152,VOSE,False
+28,Parásitos,Thriller,+16,A Contracorriente,132,Doblada Español,False
+29,Coco,Animación,TP,Disney,105,VOSE,False
+30,Vengadores: Endgame,Acción,+12,Disney,181,Doblada Español,False
+31,Joker,Drama,+18,Warner Bros,122,Doblada Español,True
+32,La La Land,Comedia,TP,Filmax,128,Doblada Español,False
+33,El Renacido,Drama,+16,Disney,156,Doblada Catalán,False
+34,Mad Max: Fury Road,Acción,+16,Warner Bros,120,Doblada Español,False
+35,Gravity,Ciencia Ficción,+7,Warner Bros,91,Doblada Catalán,False
 36,El Gran Hotel Budapest,Comedia,+12,Disney,99,Doblada Español,False
-37,Whiplash,Drama,+12,Sony Pictures,107,VOSE,True
+37,Whiplash,Drama,+12,Sony Pictures,107,Doblada Catalán,False
 38,John Wick 4,Acción,+16,Filmax,169,Doblada Español,False
-39,Aquaman y el Reino Perdido,Acción,+7,Warner Bros,124,VOSE,False
+39,Aquaman y el Reino Perdido,Acción,+7,Warner Bros,124,Doblada Español,False
 40,La Sociedad de la Nieve,Drama,+16,A Contracorriente,144,VOSE,True
-41,Robot Salvaje,Animación,TP,Universal,101,Doblada Catalán,False
-42,Venom: El Último Baile,Acción,+12,Sony Pictures,109,Doblada Español,False
-43,Megalópolis,Drama,+16,Independiente,138,Doblada Español,False
+41,Robot Salvaje,Animación,TP,Universal,101,Doblada Español,False
+42,Venom: El Último Baile,Acción,+12,Sony Pictures,109,VOSE,False
+43,Megalópolis,Drama,+16,Independiente,138,VOSE,True
 44,Alien: Romulus,Terror,+16,Disney,119,Doblada Catalán,False
-45,Beetlejuice Beetlejuice,Comedia,+12,Warner Bros,104,Doblada Español,True
-46,Twisters,Acción,+7,Universal,122,Doblada Catalán,True
-47,It Ends with Us,Drama,+12,Sony Pictures,130,Doblada Español,True
-48,Un Mundo Feliz,Documental,+12,Independiente,96,VOSE,False
-49,El Último Mohicano,Documental,+7,A Contracorriente,88,Doblada Catalán,False
-50,Monstruos: La Historia de Lyle y Erik Menéndez,Thriller,+16,Filmax,115,Doblada Catalán,False
+45,Beetlejuice Beetlejuice,Comedia,+12,Warner Bros,104,Doblada Español,False
+46,Twisters,Acción,+7,Universal,122,Doblada Español,False
+47,It Ends with Us,Drama,+12,Sony Pictures,130,Doblada Catalán,False
+48,Un Mundo Feliz,Documental,+12,Independiente,96,Doblada Español,True
+49,El Último Mohicano,Documental,+7,A Contracorriente,88,Doblada Catalán,True
+50,Monstruos: La Historia de Lyle y Erik Menéndez,Thriller,+16,Filmax,115,Doblada Español,True
