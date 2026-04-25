@@ -1,0 +1,29 @@
+{
+  "name": "tfg-cinema-bi-backend",
+  "version": "1.0.0",
+  "description": "Backend API REST para la plataforma de Business Intelligence de la cadena de cines. Consume vistas analíticas de BigQuery.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "tfg",
+    "business-intelligence",
+    "bigquery",
+    "express",
+    "cinema"
+  ],
+  "author": "jrero99",
+  "license": "MIT",
+  "dependencies": {
+    "@google-cloud/bigquery": "^7.9.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}
