@@ -300,22 +300,16 @@ def generar_hechos(
             sesiones = _determinar_sesiones_dia(es_finde)
             peliculas_dia = np.random.choice(ids_pelicula, size=sesiones, replace=False)
 
-            # Control de aforo: total acumulado por sala/día <= capacidad
-            aforo_restante = capacidad
-
             for pelicula_id in peliculas_dia:
-                if aforo_restante <= 0:
-                    break
-
-                # Afluencia: porcentaje del aforo restante para esta sesión
+                # Cada sesión es independiente: tiene su propio aforo
                 if es_finde:
-                    # Fines de semana: alta ocupación (50-90% del restante)
-                    ocupacion = np.random.uniform(0.50, 0.90)
+                    # Fines de semana: ocupación media-alta (20-50%)
+                    ocupacion = np.random.uniform(0.20, 0.50)
                 else:
-                    # Laborables: baja ocupación (15-40% del restante)
-                    ocupacion = np.random.uniform(0.15, 0.40)
+                    # Laborables: ocupación baja (5-20%)
+                    ocupacion = np.random.uniform(0.05, 0.20)
 
-                total_entradas = max(1, min(int(aforo_restante * ocupacion), aforo_restante))
+                total_entradas = max(1, int(capacidad * ocupacion))
                 vip_vendidas = 0
 
                 # Repartir entradas en grupos (simula compras individuales/parejas)
@@ -385,7 +379,6 @@ def generar_hechos(
 
                     id_ticket += 1
                     entradas_restantes -= cantidad
-                    aforo_restante -= cantidad
 
     df_entradas = pd.DataFrame(entradas_rows)
     df_bar = pd.DataFrame(bar_rows)
