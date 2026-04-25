@@ -31,9 +31,10 @@ OUTPUT_DIR: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "outp
 # ---------------------------------------------------------------------------
 # Constantes de negocio
 # ---------------------------------------------------------------------------
-PROB_SOCIO: float = 0.30          # 30 % de ventas asociadas a socio
+PROB_SOCIO: float = 0.20          # 20 % de ventas asociadas a socio
 PROB_BAR: float = 0.40            # 40 % cross-selling en bar
 PROB_BAR_VIP: float = 0.65        # 65 % de VIPs compran en bar (mayor)
+PROB_BAR_JOVEN: float = 0.18      # 18 % cross-selling para socios <25 años
 WEEKEND_MULTIPLIER: float = 1.8   # Factor de afluencia en fin de semana
 
 PRECIOS_BASE: dict[str, float] = {
@@ -271,6 +272,24 @@ def generar_hechos(
     ids_pelicula = df_peliculas["id_pelicula"].values
     ids_producto = df_productos["id_producto"].values
 
+    # Pesos de selección de socio por edad: los menores de 25 años
+    # tienen menor poder adquisitivo y, por tanto, generan menos transacciones.
+    edades_por_id = df_socios.set_index("id_socio")["edad"].to_dict()
+
+    def _peso_socio(edad: int) -> float:
+        if edad < 18:
+            return 0.15
+        if edad < 25:
+            return 0.45
+        if edad < 60:
+            return 1.00
+        return 0.90
+
+    pesos_socios = np.array(
+        [_peso_socio(edades_por_id[i]) for i in ids_socio], dtype=float
+    )
+    pesos_socios = pesos_socios / pesos_socios.sum()
+
     # Productos "caros" para VIPs (combos)
     productos_premium = df_productos.loc[
         df_productos["categoria"] == "Combo", "id_producto"
@@ -317,26 +336,33 @@ def generar_hechos(
                 while entradas_restantes > 0:
                     cantidad = min(int(np.random.choice([1, 1, 2, 2, 3, 4])), entradas_restantes)
 
+                    # Asociar socio (con peso por edad). Se hace antes para que
+                    # la edad influya en el tipo de entrada y en el cross-selling.
+                    socio: Optional[int] = None
+                    es_joven_socio: bool = False
+                    if np.random.random() < PROB_SOCIO:
+                        socio = int(np.random.choice(ids_socio, p=pesos_socios))
+                        es_joven_socio = edades_por_id[socio] < 25
+
                     # Determinar tipo de entrada
                     if formato == "IMAX":
                         tipo = "IMAX"
                     elif formato == "3D":
                         tipo = "3D"
-                    elif vip_max > 0 and vip_vendidas < vip_max and np.random.random() < 0.20:
+                    elif vip_max > 0 and vip_vendidas < vip_max and not es_joven_socio and np.random.random() < 0.20:
+                        # Los socios jóvenes prácticamente nunca compran VIP
                         tipo = "VIP"
                         cantidad = min(cantidad, vip_max - vip_vendidas)
                         vip_vendidas += cantidad
+                    elif es_joven_socio and np.random.random() < 0.55:
+                        # Los socios <25 años usan tarifa reducida con frecuencia
+                        tipo = "Reducida"
                     elif np.random.random() < 0.10:
                         tipo = "Reducida"
                     else:
                         tipo = "Normal"
 
                     precio = _precio_entrada(tipo, formato)
-
-                    # Asociar socio (30 %)
-                    socio: Optional[int] = None
-                    if np.random.random() < PROB_SOCIO:
-                        socio = int(np.random.choice(ids_socio))
 
                     entradas_rows.append({
                         "id_ticket": id_ticket,
@@ -351,7 +377,12 @@ def generar_hechos(
                     })
 
                     # --- Cross-selling bar ---
-                    prob_bar = PROB_BAR_VIP if tipo == "VIP" else PROB_BAR
+                    if es_joven_socio:
+                        prob_bar = PROB_BAR_JOVEN
+                    elif tipo == "VIP":
+                        prob_bar = PROB_BAR_VIP
+                    else:
+                        prob_bar = PROB_BAR
                     if np.random.random() < prob_bar:
                         # VIPs tienden a combos premium
                         if tipo == "VIP" and len(productos_premium) > 0:
@@ -362,6 +393,9 @@ def generar_hechos(
                             ))
 
                         cant_prod = int(np.random.choice([1, 1, 1, 2, 2, 3]))
+                        # Los socios jóvenes consumen menos cantidad por compra
+                        if es_joven_socio:
+                            cant_prod = max(1, cant_prod - 1)
                         precio_prod = float(
                             df_productos.loc[df_productos["id_producto"] == prod, "precio_venta"].iloc[0]
                         )
