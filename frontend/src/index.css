@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos base globales del dashboard */
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply antialiased;
+  }
+}
+
+@layer components {
+  /* Tarjeta genérica con borde sutil y fondo de panel */
+  .card {
+    @apply bg-bi-panel border border-bi-border rounded-2xl shadow-lg shadow-black/30;
+  }
+
+  /* Scroll fino y discreto */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-bi-bg;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-bi-border rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-700;
+  }
+}
