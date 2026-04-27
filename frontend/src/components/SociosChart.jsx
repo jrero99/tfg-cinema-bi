@@ -14,8 +14,8 @@ const fmtEUR = new Intl.NumberFormat('es-ES', {
   maximumFractionDigits: 2,
 });
 
-// Orden lógico de los niveles de fidelidad
-const ORDEN_NIVELES = ['Estándar', 'Bronce', 'Plata', 'Oro'];
+// Orden lógico de los niveles de fidelidad (de menor a mayor estatus)
+const ORDEN_NIVELES = ['Bronce', 'Plata', 'Oro'];
 
 /**
  * SociosChart
