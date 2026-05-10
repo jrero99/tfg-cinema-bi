@@ -23,21 +23,39 @@ api.interceptors.response.use(
   },
 );
 
+/**
+ * Construye los query params eliminando claves vacías para no ensuciar
+ * la URL con parámetros sin valor (ej. desde=, hasta=).
+ */
+const buildParams = ({ cine, desde, hasta } = {}) => {
+  const params = {};
+  if (cine) params.cine = cine;
+  if (desde) params.desde = desde;
+  if (hasta) params.hasta = hasta;
+  return params;
+};
+
 // --- Endpoints expuestos por el backend ---
-// Cada función desempaqueta el campo `data` del envoltorio { success, count, data }.
 
-export const fetchTaquilla = async () => {
-  const { data } = await api.get('/taquilla');
+export const fetchCines = async () => {
+  const { data } = await api.get('/cines');
   return data.data ?? [];
 };
 
-export const fetchRetail = async () => {
-  const { data } = await api.get('/retail');
+export const fetchTaquilla = async (filters) => {
+  const { data } = await api.get('/taquilla', { params: buildParams(filters) });
   return data.data ?? [];
 };
 
-export const fetchSocios = async () => {
-  const { data } = await api.get('/socios');
+export const fetchRetail = async (filters) => {
+  const { data } = await api.get('/retail', { params: buildParams(filters) });
+  return data.data ?? [];
+};
+
+// Socios siempre devuelve datos globales (no filtra por cine).
+// Sí acepta filtro por rango de meses derivado de las fechas.
+export const fetchSocios = async (filters) => {
+  const { data } = await api.get('/socios', { params: buildParams(filters) });
   return data.data ?? [];
 };
 
