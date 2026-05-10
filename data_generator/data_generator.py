@@ -4,6 +4,18 @@ Generador de datos sintéticos para el Data Warehouse de Cinema BI.
 Genera dimensiones y tablas de hechos con datos realistas para un
 esquema en estrella (Kimball) desplegado en Google BigQuery.
 
+Modelo calibrado con datos del sector español 2026:
+  - Tres tamaños de cine (pequeño / mediano / grande) con afluencias
+    anuales esperadas de ~40-50K, ~150-230K y >500K entradas respectivamente.
+  - Precio medio de entrada en torno a 7€ (gasto medio España 2024-25 = 6,69€).
+  - Sábado como día pico, miércoles como "día del espectador", lunes/martes
+    como días valle.
+  - Consumo en bar diferenciado por edad del socio:
+      <25 años    → 5-8€ (cantidad baja, sin combos premium)
+      25-44 años  → 9-14€ (máximo gasto, combos y productos premium)
+      45-64 años  → ~5-9€ (medio)
+      ≥65 años   → <4€ (mínimo, agua/snack ligero)
+
 Uso:
     Carga histórica:  python data_generator.py --modo historico --inicio 2025-01-01 --fin 2026-03-01
     Carga diaria:     python data_generator.py --modo diario --fecha 2026-03-15
@@ -32,18 +44,42 @@ OUTPUT_DIR: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "outp
 # Constantes de negocio
 # ---------------------------------------------------------------------------
 PROB_SOCIO: float = 0.20          # 20 % de ventas asociadas a socio
-PROB_BAR: float = 0.40            # 40 % cross-selling en bar
-PROB_BAR_VIP: float = 0.65        # 65 % de VIPs compran en bar (mayor)
-PROB_BAR_JOVEN: float = 0.18      # 18 % cross-selling para socios <25 años
-WEEKEND_MULTIPLIER: float = 1.8   # Factor de afluencia en fin de semana
 
+# Precios alineados con el gasto medio en taquilla del sector español
+# (6,69 € en 2024-25, ligeramente superior en 2026 por inflación).
 PRECIOS_BASE: dict[str, float] = {
-    "Normal": 8.50,
-    "VIP": 14.00,
-    "3D": 12.00,
-    "IMAX": 15.50,
-    "Reducida": 6.00,
+    "Normal":   7.00,
+    "VIP":     12.00,
+    "3D":      10.00,
+    "IMAX":    13.50,
+    "Reducida": 5.00,
 }
+
+# Configuración de los 3 cines de la cadena, diferenciados por tamaño según
+# la clasificación habitual del sector (pantallas / aforo total / facturación).
+CINES_CONFIG: list[dict] = [
+    # CINE PEQUEÑO · proximidad/barrio · objetivo ~40-50K entradas/año
+    {
+        "id_cine": 1, "nombre_cine": "Cinema Granollers Nord",
+        "ciudad": "Granollers", "tamaño_cine": "pequeño",
+        "num_salas": 3, "cap_min": 80, "cap_max": 150,
+        "vip_prob": 0.10, "formatos": ["Estándar"],
+    },
+    # CINE MEDIANO · centro comercial estándar · ~150-200K entradas/año
+    {
+        "id_cine": 2, "nombre_cine": "Cinema Mataró Parc",
+        "ciudad": "Mataró", "tamaño_cine": "mediano",
+        "num_salas": 7, "cap_min": 100, "cap_max": 200,
+        "vip_prob": 0.35, "formatos": ["Estándar"] * 4 + ["3D"],
+    },
+    # CINE GRANDE · multiplex · >500K entradas/año
+    {
+        "id_cine": 3, "nombre_cine": "Cinema BCN Diagonal",
+        "ciudad": "Barcelona", "tamaño_cine": "grande",
+        "num_salas": 14, "cap_min": 150, "cap_max": 300,
+        "vip_prob": 0.55, "formatos": ["Estándar"] * 3 + ["3D", "IMAX", "IMAX"],
+    },
+]
 
 
 # ===================================================================
@@ -76,32 +112,32 @@ def generar_dim_tiempo(fecha_inicio: date, fecha_fin: date) -> pd.DataFrame:
 
 
 def generar_dim_sala() -> pd.DataFrame:
-    """Genera Dim_Sala con 3 complejos (~10 salas c/u)."""
-    cines = [
-        {"id_cine": 1, "nombre_cine": "Cinema Mataró Parc",       "ciudad": "Mataró",      "num_salas": 10},
-        {"id_cine": 2, "nombre_cine": "Cinema Granollers Nord",    "ciudad": "Granollers",   "num_salas": 10},
-        {"id_cine": 3, "nombre_cine": "Cinema BCN Diagonal",      "ciudad": "Barcelona",    "num_salas": 11},
-    ]
-
-    formatos = ["Estándar", "Estándar", "Estándar", "3D", "IMAX"]
+    """
+    Genera Dim_Sala con 3 cines de tamaños diferenciados (pequeño / mediano / grande).
+    El tamaño condiciona capacidad, presencia de butacas VIP y formatos de proyección.
+    """
     filas: list[dict] = []
     id_sala = 1
 
-    for cine in cines:
+    for cine in CINES_CONFIG:
         for n in range(1, cine["num_salas"] + 1):
-            capacidad = int(np.random.choice([100, 150, 200, 250, 300]))
-            tiene_vip = np.random.random() < 0.40
-            butacas_vip = int(capacidad * np.random.uniform(0.10, 0.15)) if tiene_vip else 0
+            capacidad = int(np.random.randint(cine["cap_min"], cine["cap_max"] + 1))
+            tiene_vip = np.random.random() < cine["vip_prob"]
+            butacas_vip = (
+                int(capacidad * np.random.uniform(0.10, 0.15)) if tiene_vip else 0
+            )
+            formato = str(np.random.choice(cine["formatos"]))
 
             filas.append({
                 "id_sala": id_sala,
                 "id_cine": cine["id_cine"],
                 "nombre_cine": cine["nombre_cine"],
                 "ciudad": cine["ciudad"],
+                "tamaño_cine": cine["tamaño_cine"],
                 "nombre_sala": f"Sala {n}",
                 "capacidad_total": capacidad,
                 "num_butacas_vip": butacas_vip,
-                "formato_proyeccion": np.random.choice(formatos),
+                "formato_proyeccion": formato,
             })
             id_sala += 1
 
@@ -110,7 +146,6 @@ def generar_dim_sala() -> pd.DataFrame:
 
 def generar_dim_pelicula() -> pd.DataFrame:
     """Genera 50 películas reales con reestrenos aleatorios (~20%)."""
-    # Catálogo real: (titulo, genero, clasificacion, distribuidora, duracion_min)
     catalogo: list[tuple[str, str, str, str, int]] = [
         ("El Padrino",                    "Drama",            "+16", "Paramount",           175),
         ("Matrix",                         "Ciencia Ficción",  "+12", "Warner Bros",          136),
@@ -168,7 +203,6 @@ def generar_dim_pelicula() -> pd.DataFrame:
 
     filas: list[dict] = []
     for i, (titulo, genero, clasif, distrib, duracion) in enumerate(catalogo, start=1):
-        # ~20% de probabilidad de ser reestreno (aleatorio)
         es_reestreno = bool(np.random.random() < 0.20)
 
         filas.append({
@@ -232,26 +266,87 @@ def generar_dim_producto_bar() -> pd.DataFrame:
 
 
 # ===================================================================
-# GENERACIÓN DE TABLAS DE HECHOS
+# HELPERS DE NEGOCIO PARA HECHOS
 # ===================================================================
 
-def _determinar_sesiones_dia(es_fin_semana: bool) -> int:
-    """Número de sesiones por sala según día de la semana."""
-    if es_fin_semana:
-        return int(np.random.choice([4, 5, 6], p=[0.2, 0.5, 0.3]))
-    return int(np.random.choice([2, 3, 4], p=[0.3, 0.5, 0.2]))
+# Sesiones diarias por día de semana. Reflejan la programación real:
+# - Lun/Mar valle (poca rotación de cartelera)
+# - Mié es el "día del espectador" (más sesiones por descuento)
+# - Vie/Sáb/Dom pico de fin de semana
+SESIONES_POR_DIA: dict[str, list[int]] = {
+    "Lunes":     [2, 3],
+    "Martes":    [2, 3],
+    "Miércoles": [3, 4],
+    "Jueves":    [2, 3],
+    "Viernes":   [3, 4, 5],
+    "Sábado":    [5, 6, 7],
+    "Domingo":   [4, 5, 6],
+}
+
+
+def _determinar_sesiones_dia(dia_semana: str, tamaño_cine: str) -> int:
+    """Sesiones programadas según día de semana + ajuste por tamaño del cine."""
+    sesiones = int(np.random.choice(SESIONES_POR_DIA[dia_semana]))
+    if tamaño_cine == "pequeño":
+        sesiones = max(1, sesiones - 1)
+    elif tamaño_cine == "grande":
+        sesiones += 1
+    return sesiones
+
+
+def _ocupacion_dia(dia_semana: str) -> float:
+    """
+    Ocupación media por sesión según el día de la semana. Sábado es el día
+    de máxima afluencia; lunes/martes los más flojos.
+    """
+    if dia_semana == "Sábado":
+        return float(np.random.uniform(0.25, 0.50))
+    if dia_semana == "Domingo":
+        return float(np.random.uniform(0.15, 0.35))
+    if dia_semana == "Viernes":
+        return float(np.random.uniform(0.10, 0.25))
+    if dia_semana == "Miércoles":  # día del espectador
+        return float(np.random.uniform(0.07, 0.18))
+    return float(np.random.uniform(0.03, 0.12))
 
 
 def _precio_entrada(tipo_entrada: str, formato_sala: str) -> float:
     """Calcula precio unitario según tipo de entrada y formato de sala."""
     base = PRECIOS_BASE.get(tipo_entrada, PRECIOS_BASE["Normal"])
-    # Recargo por formato premium de la sala
     if formato_sala == "3D" and tipo_entrada not in ("3D", "IMAX"):
         base += 2.00
     elif formato_sala == "IMAX" and tipo_entrada != "IMAX":
         base += 3.50
     return round(base + np.random.uniform(-0.50, 0.50), 2)
 
+
+def _perfil_retail_por_edad(edad: Optional[int]) -> tuple[float, list[int], bool]:
+    """
+    Devuelve (probabilidad_bar, cantidades_posibles, prefiere_combo).
+
+    Calibrado con datos del sector español 2026:
+      <25 años    → 5-8 €  · prob 30 %, 1-2 productos, sin combos premium
+      25-44 años  → 9-14 € · prob 55 %, hasta 3 productos, combos frecuentes
+      45-64 años  → ~5-9 € · prob 40 %, 1-2 productos
+      ≥65 años   → <4 €  · prob 15 %, 1 producto (agua/snack ligero)
+      No socio    → comportamiento medio (sin información de edad)
+    """
+    if edad is None:
+        return 0.40, [1, 1, 1, 2, 2, 3], False
+    if edad < 25:
+        return 0.30, [1, 1, 2], False
+    if edad < 45:
+        # Adultos jóvenes / millennials: máximo gasto
+        return 0.55, [1, 2, 2, 3, 3], True
+    if edad < 65:
+        return 0.40, [1, 1, 2, 2], False
+    # Mayores de 65: gasto mínimo
+    return 0.15, [1], False
+
+
+# ===================================================================
+# GENERACIÓN DE TABLAS DE HECHOS
+# ===================================================================
 
 def generar_hechos(
     df_tiempo: pd.DataFrame,
@@ -261,12 +356,7 @@ def generar_hechos(
     df_productos: pd.DataFrame,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
-    Genera Fact_Ventas_Entradas y Fact_Ventas_Bar respetando:
-      - Control de aforo por sala/día
-      - Picos de fin de semana
-      - Lógica VIP (butacas disponibles)
-      - Cross-selling bar (~40 %, mayor para VIPs)
-      - Asociación a socio (~30 %)
+    Genera Fact_Ventas_Entradas y Fact_Ventas_Bar.
     """
     ids_socio = df_socios["id_socio"].values
     ids_pelicula = df_peliculas["id_pelicula"].values
@@ -290,17 +380,23 @@ def generar_hechos(
     )
     pesos_socios = pesos_socios / pesos_socios.sum()
 
-    # Productos "caros" para VIPs (combos)
-    productos_premium = df_productos.loc[
+    # Productos clasificados para diferenciar consumo por edad
+    productos_combo = df_productos.loc[
         df_productos["categoria"] == "Combo", "id_producto"
     ].values
-    productos_normales = df_productos.loc[
+    productos_no_combo = df_productos.loc[
         df_productos["categoria"] != "Combo", "id_producto"
+    ].values
+    productos_ligeros = df_productos.loc[
+        df_productos["categoria"].isin(["Bebida", "Dulces"]), "id_producto"
     ].values
 
     salas_info = df_salas.set_index("id_sala")[
-        ["capacidad_total", "num_butacas_vip", "formato_proyeccion"]
+        ["capacidad_total", "num_butacas_vip", "formato_proyeccion", "tamaño_cine"]
     ].to_dict("index")
+
+    # Diccionario {id_producto: precio_venta} para evitar lookups en cada compra
+    precio_producto = df_productos.set_index("id_producto")["precio_venta"].to_dict()
 
     entradas_rows: list[dict] = []
     bar_rows: list[dict] = []
@@ -309,25 +405,20 @@ def generar_hechos(
 
     for _, dia in df_tiempo.iterrows():
         id_tiempo: int = int(dia["id_tiempo"])
-        es_finde: bool = bool(dia["es_fin_semana"])
+        dia_semana: str = str(dia["dia_semana"])
 
         for id_sala, info_sala in salas_info.items():
             capacidad: int = info_sala["capacidad_total"]
             vip_max: int = info_sala["num_butacas_vip"]
             formato: str = info_sala["formato_proyeccion"]
+            tamaño: str = info_sala["tamaño_cine"]
 
-            sesiones = _determinar_sesiones_dia(es_finde)
+            sesiones = _determinar_sesiones_dia(dia_semana, tamaño)
             peliculas_dia = np.random.choice(ids_pelicula, size=sesiones, replace=False)
 
             for pelicula_id in peliculas_dia:
-                # Cada sesión es independiente: tiene su propio aforo
-                if es_finde:
-                    # Fines de semana: ocupación media-alta (20-50%)
-                    ocupacion = np.random.uniform(0.20, 0.50)
-                else:
-                    # Laborables: ocupación baja (5-20%)
-                    ocupacion = np.random.uniform(0.05, 0.20)
-
+                # Cada sesión tiene aforo independiente (capacidad_total).
+                ocupacion = _ocupacion_dia(dia_semana)
                 total_entradas = max(1, int(capacidad * ocupacion))
                 vip_vendidas = 0
 
@@ -339,23 +430,34 @@ def generar_hechos(
                     # Asociar socio (con peso por edad). Se hace antes para que
                     # la edad influya en el tipo de entrada y en el cross-selling.
                     socio: Optional[int] = None
-                    es_joven_socio: bool = False
+                    edad_socio: Optional[int] = None
                     if np.random.random() < PROB_SOCIO:
                         socio = int(np.random.choice(ids_socio, p=pesos_socios))
-                        es_joven_socio = edades_por_id[socio] < 25
+                        edad_socio = int(edades_por_id[socio])
 
-                    # Determinar tipo de entrada
+                    es_joven_socio = edad_socio is not None and edad_socio < 25
+                    es_mayor_socio = edad_socio is not None and edad_socio >= 65
+
+                    # ---- Determinar tipo de entrada ----
                     if formato == "IMAX":
                         tipo = "IMAX"
                     elif formato == "3D":
                         tipo = "3D"
-                    elif vip_max > 0 and vip_vendidas < vip_max and not es_joven_socio and np.random.random() < 0.20:
-                        # Los socios jóvenes prácticamente nunca compran VIP
+                    elif (
+                        vip_max > 0
+                        and vip_vendidas < vip_max
+                        and not es_joven_socio
+                        and not es_mayor_socio
+                        and np.random.random() < 0.20
+                    ):
+                        # Los socios <25 y >=65 prácticamente nunca compran VIP
                         tipo = "VIP"
                         cantidad = min(cantidad, vip_max - vip_vendidas)
                         vip_vendidas += cantidad
                     elif es_joven_socio and np.random.random() < 0.55:
-                        # Los socios <25 años usan tarifa reducida con frecuencia
+                        tipo = "Reducida"
+                    elif es_mayor_socio and np.random.random() < 0.35:
+                        # Mayores también usan tarifa reducida (jubilados/pensionistas)
                         tipo = "Reducida"
                     elif np.random.random() < 0.10:
                         tipo = "Reducida"
@@ -376,29 +478,29 @@ def generar_hechos(
                         "ingreso_total": round(precio * cantidad, 2),
                     })
 
-                    # --- Cross-selling bar ---
-                    if es_joven_socio:
-                        prob_bar = PROB_BAR_JOVEN
-                    elif tipo == "VIP":
-                        prob_bar = PROB_BAR_VIP
-                    else:
-                        prob_bar = PROB_BAR
-                    if np.random.random() < prob_bar:
-                        # VIPs tienden a combos premium
-                        if tipo == "VIP" and len(productos_premium) > 0:
-                            prod = int(np.random.choice(productos_premium))
-                        else:
-                            prod = int(np.random.choice(
-                                ids_producto if np.random.random() < 0.25 else productos_normales
-                            ))
+                    # ---- Cross-selling bar (perfil por edad) ----
+                    prob_bar, rangos_cant, prefiere_combo = _perfil_retail_por_edad(edad_socio)
 
-                        cant_prod = int(np.random.choice([1, 1, 1, 2, 2, 3]))
-                        # Los socios jóvenes consumen menos cantidad por compra
-                        if es_joven_socio:
-                            cant_prod = max(1, cant_prod - 1)
-                        precio_prod = float(
-                            df_productos.loc[df_productos["id_producto"] == prod, "precio_venta"].iloc[0]
-                        )
+                    # Override: VIP siempre tira mucho a combo premium
+                    if tipo == "VIP":
+                        prob_bar = max(prob_bar, 0.65)
+                        prefiere_combo = True
+
+                    if np.random.random() < prob_bar:
+                        # Selección de producto según perfil
+                        if tipo == "VIP" and len(productos_combo) > 0:
+                            prod = int(np.random.choice(productos_combo))
+                        elif prefiere_combo and np.random.random() < 0.35 and len(productos_combo) > 0:
+                            # Adultos 25-44 piden combos con frecuencia
+                            prod = int(np.random.choice(productos_combo))
+                        elif es_mayor_socio and len(productos_ligeros) > 0:
+                            # Mayores: agua, dulces ligeros
+                            prod = int(np.random.choice(productos_ligeros))
+                        else:
+                            prod = int(np.random.choice(productos_no_combo))
+
+                        cant_prod = int(np.random.choice(rangos_cant))
+                        precio_prod = float(precio_producto[prod])
                         bar_rows.append({
                             "id_ticket_bar": id_ticket_bar,
                             "id_tiempo": id_tiempo,
@@ -454,16 +556,20 @@ def parse_args() -> argparse.Namespace:
         description="Generador de datos sintéticos – Cinema BI Data Warehouse"
     )
     parser.add_argument(
-        "--modo", choices=["historico", "diario"], required=True,
-        help="Tipo de carga: 'historico' (rango) o 'diario' (un día).",
+        "--modo", choices=["historico", "diario", "incremental"], required=True,
+        help=(
+            "Tipo de carga: 'historico' (rango, SOBREESCRIBE todo), "
+            "'diario' (un solo día, append) o "
+            "'incremental' (rango, append a lo existente)."
+        ),
     )
     parser.add_argument(
         "--inicio", type=str, default=None,
-        help="Fecha inicio (YYYY-MM-DD). Requerido en modo histórico.",
+        help="Fecha inicio (YYYY-MM-DD). Requerido en histórico e incremental.",
     )
     parser.add_argument(
         "--fin", type=str, default=None,
-        help="Fecha fin (YYYY-MM-DD). Requerido en modo histórico.",
+        help="Fecha fin (YYYY-MM-DD). Requerido en histórico e incremental.",
     )
     parser.add_argument(
         "--fecha", type=str, default=None,
@@ -476,16 +582,18 @@ def main() -> None:
     args = parse_args()
 
     # Determinar rango de fechas
-    if args.modo == "historico":
-        if not args.inicio or not args.fin:
-            raise SystemExit("Error: --inicio y --fin son obligatorios en modo histórico.")
-        fecha_inicio = date.fromisoformat(args.inicio)
-        fecha_fin = date.fromisoformat(args.fin)
-    else:
+    if args.modo == "diario":
         if not args.fecha:
             raise SystemExit("Error: --fecha es obligatorio en modo diario.")
         fecha_inicio = date.fromisoformat(args.fecha)
         fecha_fin = fecha_inicio
+    else:  # historico o incremental
+        if not args.inicio or not args.fin:
+            raise SystemExit(
+                f"Error: --inicio y --fin son obligatorios en modo {args.modo}."
+            )
+        fecha_inicio = date.fromisoformat(args.inicio)
+        fecha_fin = date.fromisoformat(args.fin)
 
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     dias = (fecha_fin - fecha_inicio).days + 1
@@ -494,7 +602,7 @@ def main() -> None:
     print(f"  Modo: {args.modo}  |  Rango: {fecha_inicio} -> {fecha_fin} ({dias} dias)")
     print(f"{'='*60}\n")
 
-    es_incremental = args.modo == "diario"
+    es_incremental = args.modo in ("diario", "incremental")
 
     # --- Dimensiones ---
     print("[1/6] Generando dimensiones...")
@@ -519,6 +627,17 @@ def main() -> None:
         exportar_csv(df_peliculas, "Dim_Pelicula")
         exportar_csv(df_socios, "Dim_Socio")
         exportar_csv(df_productos, "Dim_Producto_Bar")
+
+    # Mostrar la composición de la cadena
+    print("\n  Composición de la cadena de cines:")
+    for cine in CINES_CONFIG:
+        salas_cine = df_salas[df_salas["id_cine"] == cine["id_cine"]]
+        aforo_total = int(salas_cine["capacidad_total"].sum())
+        print(
+            f"    · {cine['nombre_cine']:30s} "
+            f"[{cine['tamaño_cine']:7s}]  "
+            f"{cine['num_salas']} salas  ·  aforo total {aforo_total}"
+        )
 
     # --- Hechos ---
     print(f"\n[2/6] Generando tablas de hechos ({dias} dias x {len(df_salas)} salas)...")
@@ -552,10 +671,27 @@ def main() -> None:
         pct_socio = df_entradas["id_socio"].notna().mean() * 100
         pct_bar = len(df_bar) / len(df_entradas) * 100
         pct_vip = (df_entradas["tipo_entrada"] == "VIP").mean() * 100
+        pct_reducida = (df_entradas["tipo_entrada"] == "Reducida").mean() * 100
         ingreso_entradas = df_entradas["ingreso_total"].sum()
         ingreso_bar = df_bar["ingreso_total"].sum()
-        print(f"  % con socio:  {pct_socio:.1f}%  |  % cross-sell bar: {pct_bar:.1f}%  |  % VIP: {pct_vip:.1f}%")
+        precio_medio = (
+            df_entradas["ingreso_total"].sum() / df_entradas["cantidad_entradas"].sum()
+        )
+        print(
+            f"  % con socio:  {pct_socio:.1f}%  |  % cross-sell bar: {pct_bar:.1f}%  |  "
+            f"% VIP: {pct_vip:.1f}%  |  % Reducida: {pct_reducida:.1f}%"
+        )
+        print(f"  Precio medio por entrada: {precio_medio:.2f} €")
         print(f"  Ingresos:     Entradas={ingreso_entradas:,.2f}€  |  Bar={ingreso_bar:,.2f}€")
+
+        # Desglose por tamaño de cine
+        df_join = df_entradas.merge(df_salas[["id_sala", "tamaño_cine"]], on="id_sala")
+        for tamaño in ["pequeño", "mediano", "grande"]:
+            sub = df_join[df_join["tamaño_cine"] == tamaño]
+            if len(sub) > 0:
+                ingr = sub["ingreso_total"].sum()
+                ent = sub["cantidad_entradas"].sum()
+                print(f"    · Cine {tamaño:7s}  {ent:>9,.0f} entradas  ·  {ingr:>14,.2f} €")
     print(f"\n  Archivos exportados en: {OUTPUT_DIR}")
     print(f"{'='*60}\n")
 
