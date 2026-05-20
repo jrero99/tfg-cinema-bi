@@ -22,8 +22,10 @@ const fmtEUR = new Intl.NumberFormat('es-ES', {
  *
  * Props:
  *  - data: Array<{ titulo: string, ingresos_taquilla: number, ... }>
+ *  - onSelect: (titulo: string) => void · callback opcional disparado al
+ *    hacer clic sobre una barra (drill-down a la ficha de la película).
  */
-function TaquillaChart({ data = [] }) {
+function TaquillaChart({ data = [], onSelect }) {
   // Top 5 películas por ingresos
   const top5 = [...data]
     .sort((a, b) => (b.ingresos_taquilla ?? 0) - (a.ingresos_taquilla ?? 0))
@@ -36,7 +38,7 @@ function TaquillaChart({ data = [] }) {
           Top 5 Películas por Ingresos
         </h3>
         <p className="text-xs text-gray-400 mt-1">
-          Recaudación de taquilla acumulada por título.
+          Recaudación de taquilla acumulada por título{onSelect ? ' · clic para ver la ficha completa' : ''}.
         </p>
       </div>
 
@@ -70,7 +72,15 @@ function TaquillaChart({ data = [] }) {
               }}
               formatter={(value) => [fmtEUR.format(value), 'Ingresos']}
             />
-            <Bar dataKey="ingresos_taquilla" fill="#3B82F6" radius={[6, 6, 0, 0]} />
+            <Bar
+              dataKey="ingresos_taquilla"
+              fill="#3B82F6"
+              radius={[6, 6, 0, 0]}
+              cursor={onSelect ? 'pointer' : 'default'}
+              onClick={(data) => {
+                if (onSelect && data?.titulo) onSelect(data.titulo);
+              }}
+            />
           </BarChart>
         </ResponsiveContainer>
       </div>

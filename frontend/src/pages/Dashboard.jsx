@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Euro,
   Users,
@@ -6,14 +7,15 @@ import {
   Loader2,
   AlertTriangle,
   Building2,
-  Calendar,
   RotateCcw,
+  ExternalLink,
 } from 'lucide-react';
 
 import TaquillaChart from '../components/TaquillaChart.jsx';
 import RetailChart from '../components/RetailChart.jsx';
 import SociosChart from '../components/SociosChart.jsx';
 import ComparadorPelicula from '../components/ComparadorPelicula.jsx';
+import DateInput from '../components/DateInput.jsx';
 import {
   fetchTaquilla,
   fetchRetail,
@@ -92,6 +94,8 @@ function KpiCardSimple({ title, value, subtitle, icon: Icon, color = 'text-blue-
 }
 
 function Dashboard() {
+  const navigate = useNavigate();
+
   // Catálogo de cines disponibles + cine seleccionado en el desplegable.
   const [cines, setCines] = useState([]);
   const [cineSeleccionado, setCineSeleccionado] = useState(TODOS_LOS_CINES);
@@ -272,7 +276,7 @@ function Dashboard() {
   // ----- Estado de error -----
   if (error) {
     return (
-      <div className="bg-gray-900 min-h-screen flex items-center justify-center px-6">
+      <div className="flex items-center justify-center px-6 py-16">
         <div className="bg-gray-800 border border-gray-700 rounded-2xl p-8 max-w-lg text-center shadow-lg">
           <AlertTriangle className="mx-auto text-red-400 mb-3" size={36} />
           <h2 className="text-lg font-semibold text-gray-100">No se han podido cargar los datos</h2>
@@ -289,14 +293,29 @@ function Dashboard() {
   }
 
   return (
-    <div className="bg-gray-900 min-h-screen p-6 text-gray-100">
+    <div className="p-6">
       {/* Cabecera */}
-      <header className="max-w-7xl mx-auto mb-6">
-        <p className="text-sm text-cyan-400 uppercase tracking-wider font-medium">Cinema BI</p>
-        <h1 className="mt-1 text-3xl md:text-4xl font-bold text-gray-50">
-          Cinema BI · Cuadro de Mando Estratégico
-        </h1>
-        <p className="mt-2 text-sm text-gray-400">{subtituloFiltro}</p>
+      <header className="max-w-7xl mx-auto mb-6 flex flex-col md:flex-row md:items-end md:justify-between gap-3">
+        <div>
+          <p className="text-sm text-cyan-400 uppercase tracking-wider font-medium">
+            Cinema BI
+          </p>
+          <h1 className="mt-1 text-3xl md:text-4xl font-bold text-gray-50">
+            Cinema BI · Cuadro de Mando Estratégico
+          </h1>
+          <p className="mt-2 text-sm text-gray-400">{subtituloFiltro}</p>
+        </div>
+
+        {cineSeleccionado && (
+          <button
+            onClick={() => navigate(`/cines/${encodeURIComponent(cineSeleccionado)}`)}
+            className="flex items-center gap-2 px-3 py-2.5 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-xl text-sm text-gray-200 transition-colors"
+            title="Abrir la ficha completa del cine seleccionado"
+          >
+            <ExternalLink size={14} />
+            <span>Ver ficha del cine</span>
+          </button>
+        )}
       </header>
 
       {/* Barra de filtros */}
@@ -333,54 +352,30 @@ function Dashboard() {
           </div>
 
           {/* Fecha desde */}
-          <div className="flex flex-col">
-            <label
-              htmlFor="filtro-desde"
-              className="text-xs uppercase tracking-wider text-gray-400 font-medium mb-2"
-            >
+          <div className="flex flex-col w-44">
+            <label className="text-xs uppercase tracking-wider text-gray-400 font-medium mb-2">
               Desde
             </label>
-            <div className="relative">
-              <Calendar
-                size={16}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-              />
-              <input
-                id="filtro-desde"
-                type="date"
-                value={fechaDesde}
-                max={fechaHasta && fechaHasta < HOY_ISO ? fechaHasta : HOY_ISO}
-                onChange={(e) => setFechaDesde(e.target.value)}
-                disabled={loading}
-                className="bg-gray-900 border border-gray-700 hover:border-gray-600 focus:border-cyan-500 focus:outline-none rounded-xl pl-9 pr-3 py-2.5 text-sm text-gray-100 disabled:opacity-60 disabled:cursor-wait transition-colors"
-              />
-            </div>
+            <DateInput
+              value={fechaDesde}
+              max={fechaHasta && fechaHasta < HOY_ISO ? fechaHasta : HOY_ISO}
+              onChange={setFechaDesde}
+              disabled={loading}
+            />
           </div>
 
           {/* Fecha hasta */}
-          <div className="flex flex-col">
-            <label
-              htmlFor="filtro-hasta"
-              className="text-xs uppercase tracking-wider text-gray-400 font-medium mb-2"
-            >
+          <div className="flex flex-col w-44">
+            <label className="text-xs uppercase tracking-wider text-gray-400 font-medium mb-2">
               Hasta
             </label>
-            <div className="relative">
-              <Calendar
-                size={16}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-              />
-              <input
-                id="filtro-hasta"
-                type="date"
-                value={fechaHasta}
-                min={fechaDesde || undefined}
-                max={HOY_ISO}
-                onChange={(e) => setFechaHasta(e.target.value)}
-                disabled={loading}
-                className="bg-gray-900 border border-gray-700 hover:border-gray-600 focus:border-cyan-500 focus:outline-none rounded-xl pl-9 pr-3 py-2.5 text-sm text-gray-100 disabled:opacity-60 disabled:cursor-wait transition-colors"
-              />
-            </div>
+            <DateInput
+              value={fechaHasta}
+              min={fechaDesde || undefined}
+              max={HOY_ISO}
+              onChange={setFechaHasta}
+              disabled={loading}
+            />
           </div>
 
           {/* Botón limpiar (solo aparece si hay algún filtro activo) */}
@@ -435,7 +430,10 @@ function Dashboard() {
         {/* Grid inferior · Gráficos */}
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="lg:col-span-2">
-            <TaquillaChart data={taquilla} />
+            <TaquillaChart
+              data={taquilla}
+              onSelect={(titulo) => navigate(`/peliculas/${encodeURIComponent(titulo)}`)}
+            />
           </div>
           <div className="lg:col-span-2">
             <ComparadorPelicula
@@ -457,9 +455,6 @@ function Dashboard() {
         )}
       </main>
 
-      <footer className="max-w-7xl mx-auto mt-10 text-center text-xs text-gray-600">
-        TFG · Plataforma BI para cines · Datos en tiempo real desde BigQuery.
-      </footer>
     </div>
   );
 }

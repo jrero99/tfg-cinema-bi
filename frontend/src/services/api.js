@@ -74,4 +74,53 @@ export const fetchComparativaPelicula = async (titulo, filters = {}) => {
   return data.data ?? [];
 };
 
+// Ficha completa de una película (metadatos + taquilla agregable por mes y cine).
+export const fetchDetallePelicula = async (titulo, filters = {}) => {
+  const url = `/peliculas/${encodeURIComponent(titulo)}/detalle`;
+  const { data } = await api.get(url, { params: buildParams(filters) });
+  return data.data ?? { info: null, taquilla: [] };
+};
+
+// Ficha completa de un cine (info estructural + taquilla + retail).
+export const fetchDetalleCine = async (nombre, filters = {}) => {
+  const url = `/cines/${encodeURIComponent(nombre)}/detalle`;
+  const { data } = await api.get(url, { params: buildParams(filters) });
+  return data.data ?? { info: null, taquilla: [], retail: [] };
+};
+
+// Ocupación media de aforo. Si `groupBy='sala'`, devuelve filas por sala
+// del cine filtrado; en caso contrario, agrega por cine.
+export const fetchOcupacion = async (filters = {}) => {
+  const { groupBy, ...rest } = filters;
+  const params = buildParams(rest);
+  if (groupBy) params.groupBy = groupBy;
+  const { data } = await api.get('/operaciones/ocupacion', { params });
+  return data.data ?? [];
+};
+
+// Cruce día de semana × franja horaria para el heatmap operativo.
+export const fetchActividadHoraria = async (filters = {}) => {
+  const { data } = await api.get('/operaciones/actividad-horaria', { params: buildParams(filters) });
+  return data.data ?? [];
+};
+
+// Rentabilidad por formato de proyección (2D, 3D, IMAX, VIP…).
+export const fetchRentabilidadFormatos = async (filters = {}) => {
+  const { data } = await api.get('/operaciones/rentabilidad-formato', { params: buildParams(filters) });
+  return data.data ?? [];
+};
+
+// Cross-selling: cruce género de película × categoría de bar.
+export const fetchCrossSellingGeneroBar = async (filters = {}) => {
+  const { data } = await api.get('/cross-selling/genero-bar', { params: buildParams(filters) });
+  return data.data ?? [];
+};
+
+// Segmentación demográfica de socios por edad, género o nivel de fidelidad.
+export const fetchSegmentacionSocios = async (dimension, filters = {}) => {
+  const params = { ...buildParams(filters), dimension };
+  const { data } = await api.get('/socios/segmentacion', { params });
+  return data.data ?? [];
+};
+
 export default api;
