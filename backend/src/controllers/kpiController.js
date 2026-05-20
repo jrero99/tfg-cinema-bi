@@ -107,6 +107,105 @@ async function getSocios(req, res, next) {
 }
 
 /**
+ * Devuelve la lista de títulos de película presentes en la vista de taquilla.
+ * Alimenta el desplegable del comparador entre cines en el frontend.
+ */
+async function getPeliculas(req, res, next) {
+  try {
+    const bigquery = getBigQueryClient();
+    const projectId = process.env.PROJECT_ID;
+    const datasetId = process.env.DATASET_ID;
+
+    const query = `
+      SELECT DISTINCT titulo
+      FROM \`${projectId}.${datasetId}.vw_kpi_taquilla\`
+      WHERE titulo IS NOT NULL
+      ORDER BY titulo
+    `;
+
+    const [rows] = await bigquery.query({
+      query,
+      location: 'europe-west1',
+    });
+
+    res.status(200).json({
+      success: true,
+      count: rows.length,
+      data: rows.map((r) => r.titulo),
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Devuelve la taquilla de una película desglosada por cine y mes,
+ * para alimentar la vista comparativa entre cines del dashboard.
+ *
+ * Query params:
+ *   - titulo (obligatorio): título exacto de la película.
+ *   - desde / hasta (opcionales): rango ISO YYYY-MM-DD para acotar meses.
+ */
+async function getComparativaPelicula(req, res, next) {
+  try {
+    const { titulo, desde, hasta } = req.query;
+
+    if (!titulo) {
+      return res.status(400).json({
+        success: false,
+        error: { message: "El parámetro 'titulo' es obligatorio." },
+      });
+    }
+
+    const bigquery = getBigQueryClient();
+    const projectId = process.env.PROJECT_ID;
+    const datasetId = process.env.DATASET_ID;
+
+    const wheres = ['titulo = @titulo'];
+    const params = { titulo };
+    const types = {};
+
+    if (desde) {
+      wheres.push('anio * 100 + mes >= @desde_ym');
+      params.desde_ym = fechaAYearMonth(desde);
+      types.desde_ym = 'INT64';
+    }
+    if (hasta) {
+      wheres.push('anio * 100 + mes <= @hasta_ym');
+      params.hasta_ym = fechaAYearMonth(hasta);
+      types.hasta_ym = 'INT64';
+    }
+
+    const query = `
+      SELECT *
+      FROM \`${projectId}.${datasetId}.vw_kpi_taquilla\`
+      WHERE ${wheres.join(' AND ')}
+      ORDER BY nombre_cine, anio, mes
+    `;
+
+    const [rows] = await bigquery.query({
+      query,
+      location: 'europe-west1',
+      params,
+      types,
+    });
+
+    res.status(200).json({
+      success: true,
+      count: rows.length,
+      filtros: {
+        titulo,
+        desde: desde ?? null,
+        hasta: hasta ?? null,
+      },
+      data: rows,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
  * Devuelve la lista de cines disponibles consultando Dim_Sala.
  */
 async function getCines(req, res, next) {
@@ -141,4 +240,6 @@ module.exports = {
   getRetail,
   getSocios,
   getCines,
+  getPeliculas,
+  getComparativaPelicula,
 };

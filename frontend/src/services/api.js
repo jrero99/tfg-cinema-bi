@@ -59,4 +59,19 @@ export const fetchSocios = async (filters) => {
   return data.data ?? [];
 };
 
+// Catálogo de títulos de película presentes en la vista de taquilla.
+// Alimenta el desplegable del comparador entre cines.
+export const fetchPeliculas = async () => {
+  const { data } = await api.get('/peliculas');
+  return data.data ?? [];
+};
+
+// Taquilla de una película desglosada por cine y mes.
+// El backend exige el parámetro `titulo`; las fechas son opcionales.
+export const fetchComparativaPelicula = async (titulo, filters = {}) => {
+  const params = { ...buildParams(filters), titulo };
+  const { data } = await api.get('/taquilla/comparar', { params });
+  return data.data ?? [];
+};
+
 export default api;

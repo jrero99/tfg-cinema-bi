@@ -13,11 +13,13 @@ import {
 import TaquillaChart from '../components/TaquillaChart.jsx';
 import RetailChart from '../components/RetailChart.jsx';
 import SociosChart from '../components/SociosChart.jsx';
+import ComparadorPelicula from '../components/ComparadorPelicula.jsx';
 import {
   fetchTaquilla,
   fetchRetail,
   fetchSocios,
   fetchCines,
+  fetchPeliculas,
 } from '../services/api.js';
 
 // Formateadores reutilizables (i18n español, moneda EUR).
@@ -94,6 +96,9 @@ function Dashboard() {
   const [cines, setCines] = useState([]);
   const [cineSeleccionado, setCineSeleccionado] = useState(TODOS_LOS_CINES);
 
+  // Catálogo de películas para el comparador (carga única).
+  const [peliculas, setPeliculas] = useState([]);
+
   // Filtro temporal · ambos en formato ISO YYYY-MM-DD ("" = sin filtro).
   const [fechaDesde, setFechaDesde] = useState('');
   const [fechaHasta, setFechaHasta] = useState('');
@@ -107,11 +112,17 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // ----- Carga inicial del catálogo de cines (una sola vez) -----
+  // ----- Carga inicial de catálogos (una sola vez) -----
   useEffect(() => {
     fetchCines()
       .then(setCines)
       .catch((err) => console.warn('No se pudo cargar el listado de cines:', err.message));
+
+    fetchPeliculas()
+      .then(setPeliculas)
+      .catch((err) =>
+        console.warn('No se pudo cargar el catálogo de películas:', err.message),
+      );
   }, []);
 
   // ----- Carga de datos cada vez que cambian los filtros -----
@@ -425,6 +436,12 @@ function Dashboard() {
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="lg:col-span-2">
             <TaquillaChart data={taquilla} />
+          </div>
+          <div className="lg:col-span-2">
+            <ComparadorPelicula
+              titulos={peliculas}
+              filters={{ desde: fechaDesde, hasta: fechaHasta }}
+            />
           </div>
           <RetailChart data={retail} />
           <SociosChart data={socios} />
