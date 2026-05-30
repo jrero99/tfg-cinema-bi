@@ -128,12 +128,12 @@ function SegmentacionSocios() {
   }, [filas]);
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
       <header className="mb-6">
         <p className="text-sm text-cyan-400 uppercase tracking-wider font-medium">
           Socios
         </p>
-        <h1 className="mt-1 text-3xl md:text-4xl font-bold text-gray-50">
+        <h1 className="mt-1 text-2xl sm:text-3xl md:text-4xl font-bold text-gray-50">
           Segmentación demográfica
         </h1>
         <p className="mt-2 text-sm text-gray-400">
@@ -146,17 +146,17 @@ function SegmentacionSocios() {
       {/* Filtros */}
       <section className="mb-6 bg-gray-800/60 border border-gray-700 rounded-2xl p-4 shadow-lg">
         <div className="flex flex-col md:flex-row md:items-end md:flex-wrap gap-4">
-          <div className="flex flex-col flex-1">
+          <div className="flex flex-col w-full sm:flex-1">
             <label className="text-xs uppercase tracking-wider text-gray-400 font-medium mb-2">
               Dimensión
             </label>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {DIMENSIONES.map((d) => (
                 <button
                   key={d.id}
                   onClick={() => setDimension(d.id)}
                   disabled={loading}
-                  className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                  className={`flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
                     dimension === d.id
                       ? 'bg-cyan-500/15 border border-cyan-500/40 text-cyan-200'
                       : 'bg-gray-900 border border-gray-700 text-gray-400 hover:text-gray-100 hover:border-gray-600'
@@ -168,7 +168,7 @@ function SegmentacionSocios() {
             </div>
           </div>
 
-          <div className="flex flex-col w-44">
+          <div className="flex flex-col w-full sm:w-44">
             <label className="text-xs uppercase tracking-wider text-gray-400 font-medium mb-2">
               Desde
             </label>
@@ -180,7 +180,7 @@ function SegmentacionSocios() {
             />
           </div>
 
-          <div className="flex flex-col w-44">
+          <div className="flex flex-col w-full sm:w-44">
             <label className="text-xs uppercase tracking-wider text-gray-400 font-medium mb-2">
               Hasta
             </label>
@@ -197,7 +197,7 @@ function SegmentacionSocios() {
             <button
               onClick={limpiar}
               disabled={loading}
-              className="self-end flex items-center gap-2 px-4 py-2.5 bg-gray-900 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-xl text-sm text-gray-300 transition-colors disabled:opacity-60"
+              className="w-full sm:w-auto sm:self-end flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-900 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-xl text-sm text-gray-300 transition-colors disabled:opacity-60"
             >
               <RotateCcw size={14} />
               <span>Limpiar</span>

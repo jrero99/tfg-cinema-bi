@@ -108,7 +108,7 @@ function HeatmapHorario({ data = [], metrica = 'ingresos' }) {
   const fmt = metrica === 'ingresos' ? fmtEUR.format : fmtNum.format;
 
   return (
-    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-lg">
+    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-4 sm:p-6 shadow-lg">
       <div className="mb-4">
         <h3 className="text-lg font-semibold text-gray-100">
           Actividad por día y franja horaria

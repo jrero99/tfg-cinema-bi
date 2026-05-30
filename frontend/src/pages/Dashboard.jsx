@@ -293,14 +293,14 @@ function Dashboard() {
   }
 
   return (
-    <div className="p-6">
+    <div className="px-4 sm:px-6 py-6">
       {/* Cabecera */}
       <header className="max-w-7xl mx-auto mb-6 flex flex-col md:flex-row md:items-end md:justify-between gap-3">
         <div>
           <p className="text-sm text-cyan-400 uppercase tracking-wider font-medium">
             Cinema BI
           </p>
-          <h1 className="mt-1 text-3xl md:text-4xl font-bold text-gray-50">
+          <h1 className="mt-1 text-2xl sm:text-3xl md:text-4xl font-bold text-gray-50">
             Cinema BI · Cuadro de Mando Estratégico
           </h1>
           <p className="mt-2 text-sm text-gray-400">{subtituloFiltro}</p>
@@ -309,7 +309,7 @@ function Dashboard() {
         {cineSeleccionado && (
           <button
             onClick={() => navigate(`/cines/${encodeURIComponent(cineSeleccionado)}`)}
-            className="flex items-center gap-2 px-3 py-2.5 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-xl text-sm text-gray-200 transition-colors"
+            className="self-stretch md:self-auto flex items-center justify-center gap-2 px-3 py-2.5 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-xl text-sm text-gray-200 transition-colors"
             title="Abrir la ficha completa del cine seleccionado"
           >
             <ExternalLink size={14} />
@@ -322,7 +322,7 @@ function Dashboard() {
       <section className="max-w-7xl mx-auto mb-6 bg-gray-800/60 border border-gray-700 rounded-2xl p-4 shadow-lg">
         <div className="flex flex-col md:flex-row md:items-end md:flex-wrap gap-4">
           {/* Selector de cine */}
-          <div className="flex flex-col flex-1 min-w-[220px]">
+          <div className="flex flex-col w-full sm:flex-1 sm:min-w-[220px]">
             <label
               htmlFor="filtro-cine"
               className="text-xs uppercase tracking-wider text-gray-400 font-medium mb-2"
@@ -352,7 +352,7 @@ function Dashboard() {
           </div>
 
           {/* Fecha desde */}
-          <div className="flex flex-col w-44">
+          <div className="flex flex-col w-full sm:w-44">
             <label className="text-xs uppercase tracking-wider text-gray-400 font-medium mb-2">
               Desde
             </label>
@@ -365,7 +365,7 @@ function Dashboard() {
           </div>
 
           {/* Fecha hasta */}
-          <div className="flex flex-col w-44">
+          <div className="flex flex-col w-full sm:w-44">
             <label className="text-xs uppercase tracking-wider text-gray-400 font-medium mb-2">
               Hasta
             </label>
@@ -383,7 +383,7 @@ function Dashboard() {
             <button
               onClick={limpiarFiltros}
               disabled={loading}
-              className="self-end flex items-center gap-2 px-4 py-2.5 bg-gray-900 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-xl text-sm text-gray-300 transition-colors disabled:opacity-60"
+              className="w-full sm:w-auto sm:self-end flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-900 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-xl text-sm text-gray-300 transition-colors disabled:opacity-60"
               title="Quitar todos los filtros"
             >
               <RotateCcw size={14} />

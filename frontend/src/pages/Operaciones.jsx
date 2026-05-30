@@ -92,12 +92,12 @@ function Operaciones() {
   const hayFiltros = cineSeleccionado || fechaDesde || fechaHasta;
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
       <header className="mb-6">
         <p className="text-sm text-cyan-400 uppercase tracking-wider font-medium">
           Operaciones de sala
         </p>
-        <h1 className="mt-1 text-3xl md:text-4xl font-bold text-gray-50">
+        <h1 className="mt-1 text-2xl sm:text-3xl md:text-4xl font-bold text-gray-50">
           Rotación de aforo y mapa horario
         </h1>
         <p className="mt-2 text-sm text-gray-400">
@@ -109,7 +109,7 @@ function Operaciones() {
       {/* Filtros */}
       <section className="mb-6 bg-gray-800/60 border border-gray-700 rounded-2xl p-4 shadow-lg">
         <div className="flex flex-col md:flex-row md:items-end md:flex-wrap gap-4">
-          <div className="flex flex-col flex-1 min-w-[220px]">
+          <div className="flex flex-col w-full sm:flex-1 sm:min-w-[220px]">
             <label className="text-xs uppercase tracking-wider text-gray-400 font-medium mb-2">
               Cine
             </label>
@@ -132,7 +132,7 @@ function Operaciones() {
             </div>
           </div>
 
-          <div className="flex flex-col w-44">
+          <div className="flex flex-col w-full sm:w-44">
             <label className="text-xs uppercase tracking-wider text-gray-400 font-medium mb-2">
               Desde
             </label>
@@ -144,7 +144,7 @@ function Operaciones() {
             />
           </div>
 
-          <div className="flex flex-col w-44">
+          <div className="flex flex-col w-full sm:w-44">
             <label className="text-xs uppercase tracking-wider text-gray-400 font-medium mb-2">
               Hasta
             </label>
@@ -161,7 +161,7 @@ function Operaciones() {
             <button
               onClick={limpiar}
               disabled={loading}
-              className="self-end flex items-center gap-2 px-4 py-2.5 bg-gray-900 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-xl text-sm text-gray-300 transition-colors disabled:opacity-60"
+              className="w-full sm:w-auto sm:self-end flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-900 hover:bg-gray-700 border border-gray-700 hover:border-gray-600 rounded-xl text-sm text-gray-300 transition-colors disabled:opacity-60"
             >
               <RotateCcw size={14} />
               <span>Limpiar</span>
@@ -192,7 +192,7 @@ function Operaciones() {
 
         <RentabilidadFormatoChart data={rentabilidad} />
 
-        <div className="bg-gray-800/60 border border-gray-700 rounded-2xl p-3 inline-flex items-center gap-2">
+        <div className="bg-gray-800/60 border border-gray-700 rounded-2xl p-3 flex flex-wrap items-center gap-2">
           <span className="text-xs uppercase tracking-wider text-gray-400 mr-2">
             Métrica del mapa
           </span>

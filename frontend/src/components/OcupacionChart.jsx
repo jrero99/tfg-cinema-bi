@@ -42,7 +42,7 @@ function OcupacionChart({ data = [], modo = 'cine' }) {
     : 'Rotación media de aforo por cine';
 
   return (
-    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-lg">
+    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-4 sm:p-6 shadow-lg">
       <div className="mb-4 flex flex-col md:flex-row md:items-end md:justify-between gap-2">
         <div>
           <h3 className="text-lg font-semibold text-gray-100">

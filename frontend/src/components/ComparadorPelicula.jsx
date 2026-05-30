@@ -160,7 +160,7 @@ function ComparadorPelicula({ titulos = [], filters = {} }) {
   const lider = totalesPorCine[0];
 
   return (
-    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-lg">
+    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-4 sm:p-6 shadow-lg">
       <div className="mb-4 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div>
           <h3 className="text-lg font-semibold text-gray-100">
@@ -172,7 +172,7 @@ function ComparadorPelicula({ titulos = [], filters = {} }) {
           </p>
         </div>
 
-        <div className="flex flex-col min-w-[260px]">
+        <div className="flex flex-col w-full md:w-auto md:min-w-[260px]">
           <label
             htmlFor="comparador-titulo"
             className="text-xs uppercase tracking-wider text-gray-400 font-medium mb-2"

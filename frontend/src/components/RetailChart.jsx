@@ -37,7 +37,7 @@ function RetailChart({ data = [] }) {
     .sort((a, b) => b.value - a.value);
 
   return (
-    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-lg">
+    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-4 sm:p-6 shadow-lg">
       <div className="mb-4">
         <h3 className="text-lg font-semibold text-gray-100">
           Ingresos del Bar por Categoría

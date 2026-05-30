@@ -143,7 +143,7 @@ function CineDetalle() {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto p-6 flex items-center text-sm text-gray-400">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex items-center text-sm text-gray-400">
         <Loader2 size={16} className="animate-spin mr-2" />
         Cargando ficha del cine “{nombreDecoded}”…
       </div>
@@ -152,7 +152,7 @@ function CineDetalle() {
 
   if (error) {
     return (
-      <div className="max-w-7xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
         <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 flex items-center gap-3 text-red-300">
           <AlertTriangle size={20} />
           <span>{error}</span>
@@ -162,7 +162,7 @@ function CineDetalle() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
       <div className="flex items-center justify-between">
         <button
           onClick={() => navigate(-1)}

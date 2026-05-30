@@ -61,7 +61,7 @@ function RentabilidadFormatoChart({ data = [] }) {
     .sort((a, b) => b.ingresos_taquilla - a.ingresos_taquilla);
 
   return (
-    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-lg space-y-6">
+    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-4 sm:p-6 shadow-lg space-y-6">
       <div>
         <h3 className="text-lg font-semibold text-gray-100">
           Rentabilidad por formato de proyección

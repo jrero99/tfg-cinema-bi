@@ -32,7 +32,7 @@ function TaquillaChart({ data = [], onSelect }) {
     .slice(0, 5);
 
   return (
-    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-lg">
+    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-4 sm:p-6 shadow-lg">
       <div className="mb-4">
         <h3 className="text-lg font-semibold text-gray-100">
           Top 5 Películas por Ingresos

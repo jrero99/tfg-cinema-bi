@@ -7,7 +7,7 @@ import { LayoutDashboard, Activity, Shuffle, UsersRound } from 'lucide-react';
  */
 function Layout() {
   const linkBase =
-    'flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-colors';
+    'flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-colors shrink-0';
   const linkActivo = 'bg-cyan-500/15 border border-cyan-500/40 text-cyan-200';
   const linkInactivo =
     'text-gray-400 hover:text-gray-100 border border-transparent hover:bg-gray-800';
@@ -15,7 +15,7 @@ function Layout() {
   return (
     <div className="bg-gray-900 min-h-screen text-gray-100">
       <header className="sticky top-0 z-20 bg-gray-900/90 backdrop-blur border-b border-gray-800">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-3 px-6 py-3">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-3 px-4 sm:px-6 py-3">
           <div className="flex items-center gap-3">
             <span className="text-sm text-cyan-400 uppercase tracking-wider font-semibold">
               Cinema BI
@@ -25,7 +25,7 @@ function Layout() {
             </span>
           </div>
 
-          <nav className="flex items-center gap-2">
+          <nav className="flex items-center gap-2 overflow-x-auto -mx-1 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <NavLink
               to="/"
               end
@@ -69,7 +69,7 @@ function Layout() {
 
       <Outlet />
 
-      <footer className="max-w-7xl mx-auto py-6 px-6 text-center text-xs text-gray-600">
+      <footer className="max-w-7xl mx-auto py-6 px-4 sm:px-6 text-center text-xs text-gray-600">
         TFG · Plataforma BI para cines · Datos en tiempo real desde BigQuery.
       </footer>
     </div>
