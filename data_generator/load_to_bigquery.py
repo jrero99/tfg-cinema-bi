@@ -2,12 +2,20 @@
 Carga de archivos CSV locales hacia Google BigQuery.
 
 Ingesta los 7 CSVs generados por data_generator.py en el dataset
-dwh_cinema de BigQuery, soportando carga completa (WRITE_TRUNCATE)
-e incremental (WRITE_APPEND).
+dwh_cinema mediante WRITE_TRUNCATE: vacía las tablas y las rellena con
+el contenido completo de los CSV. La operación es idempotente, lo que
+elimina cualquier riesgo de duplicación al ejecutarla varias veces.
+
+Diseño:
+    El generador (data_generator.py) ya mantiene el CSV con el histórico
+    completo, anexando los días nuevos cuando se ejecuta en modo diario o
+    incremental. Por eso aquí solo necesitamos vaciar y rellenar la tabla
+    destino — no existe un modo "append" porque, al leerse el CSV
+    completo en cada carga, ese modo duplicaba el histórico anterior.
 
 Uso:
-    Carga completa:     python load_to_bigquery.py --mode full
-    Carga incremental:  python load_to_bigquery.py --mode incremental
+    python load_to_bigquery.py
+    python load_to_bigquery.py --mode full   # equivalente, explícito
 """
 
 import argparse
@@ -71,16 +79,14 @@ def cargar_csv(
     client: bigquery.Client,
     csv_filename: str,
     table_name: str,
-    write_disposition: str,
 ) -> None:
     """
-    Carga un archivo CSV en una tabla de BigQuery.
+    Carga un archivo CSV en una tabla de BigQuery con WRITE_TRUNCATE.
 
     Args:
         client: Cliente de BigQuery autenticado.
         csv_filename: Nombre del archivo CSV (ej. 'Dim_Sala.csv').
         table_name: Nombre de la tabla destino en BigQuery.
-        write_disposition: 'WRITE_TRUNCATE' (full) o 'WRITE_APPEND' (incremental).
     """
     csv_path = os.path.join(CSV_DIR, csv_filename)
 
@@ -95,10 +101,10 @@ def cargar_csv(
         source_format=bigquery.SourceFormat.CSV,
         skip_leading_rows=1,
         autodetect=True,
-        write_disposition=write_disposition,
+        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
     )
 
-    log(f"Cargando {csv_filename} -> {DATASET_ID}.{table_name} ({write_disposition})...")
+    log(f"Cargando {csv_filename} -> {DATASET_ID}.{table_name} (WRITE_TRUNCATE)...")
 
     with open(csv_path, "rb") as f:
         load_job = client.load_table_from_file(f, table_id, job_config=job_config)
@@ -114,13 +120,21 @@ def cargar_csv(
 def parse_args() -> argparse.Namespace:
     """Parsea los argumentos de linea de comandos."""
     parser = argparse.ArgumentParser(
-        description="Carga CSVs generados hacia Google BigQuery (dwh_cinema)"
+        description=(
+            "Carga CSVs generados hacia Google BigQuery (dwh_cinema). "
+            "La carga es siempre idempotente: WRITE_TRUNCATE vacía las "
+            "tablas antes de insertar el contenido del CSV."
+        )
     )
+    # Se mantiene el flag --mode aceptando solo 'full' por compatibilidad
+    # con scripts y documentación previos. El modo 'incremental' se eliminó
+    # porque el loader lee el CSV completo en cada ejecución y, al usar
+    # WRITE_APPEND, duplicaba todo el histórico anterior.
     parser.add_argument(
         "--mode",
-        choices=["full", "incremental"],
-        required=True,
-        help="'full' = WRITE_TRUNCATE (sobreescribe). 'incremental' = WRITE_APPEND (anade).",
+        choices=["full"],
+        default="full",
+        help="Modo de carga. Solo 'full' (WRITE_TRUNCATE) está soportado.",
     )
     return parser.parse_args()
 
@@ -128,15 +142,9 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
 
-    write_disposition = (
-        bigquery.WriteDisposition.WRITE_TRUNCATE
-        if args.mode == "full"
-        else bigquery.WriteDisposition.WRITE_APPEND
-    )
-
     print(f"\n{'='*60}")
     print(f"  Cinema BI - Carga de datos a BigQuery")
-    print(f"  Modo: {args.mode}  |  Dataset: {DATASET_ID}")
+    print(f"  Modo: {args.mode} (WRITE_TRUNCATE)  |  Dataset: {DATASET_ID}")
     print(f"{'='*60}\n")
 
     client = crear_cliente()
@@ -146,7 +154,7 @@ def main() -> None:
 
     for csv_filename, table_name in CSV_TO_TABLE.items():
         try:
-            cargar_csv(client, csv_filename, table_name, write_disposition)
+            cargar_csv(client, csv_filename, table_name)
             exitos += 1
         except Exception as e:
             log(f"ERROR en {csv_filename}: {e}")
